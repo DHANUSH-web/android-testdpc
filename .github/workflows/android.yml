@@ -31,7 +31,7 @@ jobs:
         run: bazel build //:testdpc
 
       - name: Upload APK
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: testdpc-apk
           path: bazel-bin/testdpc.apk
