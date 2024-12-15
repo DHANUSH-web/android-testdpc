@@ -44,7 +44,7 @@ import com.afwsamples.testdpc.common.preference.DpcPreference;
 import java.util.Set;
 
 /** Fragment to control eSIMs. */
-@TargetApi(VERSION_CODES.VANILLA_ICE_CREAM)
+@TargetApi(VERSION_CODES.ICE_CREAM_SANDWICH)
 public class EsimControlFragment extends BaseSearchablePolicyPreferenceFragment
     implements Preference.OnPreferenceClickListener, Preference.OnPreferenceChangeListener {
   private static final String TAG = EsimControlFragment.class.getSimpleName();
