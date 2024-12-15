@@ -48,7 +48,7 @@ jobs:
       - name: Build APK
         run: |
           # Build the APK using Bazel
-          bazel build //:testdpc
+          bazel build testdpc
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4  # Upload the built APK as an artifact
