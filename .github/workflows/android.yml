@@ -24,7 +24,6 @@ jobs:
         with:
           java-version: '11'  # Use Java 11 for compatibility
           distribution: 'adopt'  # Use AdoptOpenJDK distribution
-          cache: 'gradle'  # Enable caching for Gradle dependencies
 
       - name: Install Bazelisk (Bazel Manager)
         run: |
