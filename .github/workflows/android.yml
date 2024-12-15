@@ -28,11 +28,11 @@ jobs:
       - name: Install Bazelisk (Bazel Manager)
         run: |
           # Download the Bazelisk binary (a Bazel version manager)
-          curl -Lo /usr/local/bin/bazel https://github.com/bazelbuild/bazelisk/releases/latest/download/bazelisk-linux-amd64
+          sudo curl -Lo /usr/local/bin/bazel https://github.com/bazelbuild/bazelisk/releases/latest/download/bazelisk-linux-amd64
           # Verify the integrity of the downloaded file using SHA-256 checksum
           echo "e2a7d25b7c79804d5ab6e72b5a5f3b89c15637f8e91bbed18bfb7be7518f3204  /usr/local/bin/bazel" | sha256sum -c -
           # Make the binary executable
-          chmod +x /usr/local/bin/bazel
+          sudo chmod +x /usr/local/bin/bazel
 
       - name: Configure Bazel Version
         run: echo "7.4.1" > .bazelversion  # Set the Bazel version to be used
