@@ -1,41 +1,58 @@
-name: Android CI
+name: Build TestDPC APK
 
 on:
   push:
     branches:
-      - master
+      - master  # Trigger the workflow on pushes to the main branch
   pull_request:
     branches:
-      - master
+      - master  # Trigger the workflow on pull requests targeting the main branch
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    name: Build APK
+    runs-on: ubuntu-latest  # Use the latest Ubuntu environment provided by GitHub Actions
 
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v2
-
-      - name: Set up JDK 11
-        uses: actions/setup-java@v2
+      - name: Checkout Code
+        uses: actions/checkout@v3  # Check out the repository code
         with:
-          distribution: "adopt"
-          java-version: "11"
+          fetch-depth: 1  # Use a shallow clone for better performance since full history is not required
 
-      - name: Install and Set up Bazel
+      - name: Set up JDK
+        uses: actions/setup-java@v3  # Set up Java Development Kit (JDK)
+        with:
+          java-version: '11'  # Use Java 11 for compatibility
+          distribution: 'adopt'  # Use AdoptOpenJDK distribution
+          cache: 'gradle'  # Enable caching for Gradle dependencies
+
+      - name: Install Bazelisk (Bazel Manager)
         run: |
-          sudo apt update
-          sudo apt install -y curl gnupg
-          curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --dearmor -o /usr/share/keyrings/bazel-archive-keyring.gpg
-          echo "deb [signed-by=/usr/share/keyrings/bazel-archive-keyring.gpg] https://storage.googleapis.com/bazel-apt stable main" | sudo tee /etc/apt/sources.list.d/bazel.list
-          sudo apt update
-          sudo apt install -y bazel-6.3.0
+          # Download the Bazelisk binary (a Bazel version manager)
+          curl -Lo /usr/local/bin/bazel https://github.com/bazelbuild/bazelisk/releases/latest/download/bazelisk-linux-amd64
+          # Verify the integrity of the downloaded file using SHA-256 checksum
+          echo "e2a7d25b7c79804d5ab6e72b5a5f3b89c15637f8e91bbed18bfb7be7518f3204  /usr/local/bin/bazel" | sha256sum -c -
+          # Make the binary executable
+          chmod +x /usr/local/bin/bazel
+
+      - name: Configure Bazel Version
+        run: echo "7.4.1" > .bazelversion  # Set the Bazel version to be used
+
+      - name: Verify Bazel Version
+        run: bazel --version  # Output the Bazel version to confirm the installation
+
+      - name: Clean Build Environment
+        run: |
+          # Clean the build environment to remove cached or intermediate files
+          bazel clean --expunge
 
       - name: Build APK
-        run: bazel build //:testdpc
+        run: |
+          # Build the APK using Bazel
+          bazel build //:testdpc
 
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4  # Upload the built APK as an artifact
         with:
-          name: testdpc-apk
-          path: bazel-bin/testdpc.apk
+          name: testdpc-apk  # Name the uploaded artifact
+          path: "$(bazel info bazel-bin)/testdpc.apk"  # Path to the APK file built by Bazel
